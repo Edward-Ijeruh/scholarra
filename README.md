@@ -8,7 +8,7 @@ This project is being **built in public** as part of my journey to grow as a dev
 
 ---
 
-## 🚀 Features (Planned)
+## Features (Planned)
 
 - Aggregated list of scholarships, grants, and competitions
 - Filters by eligibility, location, and field of study
@@ -18,7 +18,7 @@ This project is being **built in public** as part of my journey to grow as a dev
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Next.js / React**
 - **Firebase** (Authentication & Database)
@@ -29,25 +29,18 @@ This project is being **built in public** as part of my journey to grow as a dev
 
 ---
 
-## 📌 Project Status
+## Project Status
 
 Scholarra is currently under active development. Features and structure may change as the product evolves.
 
 ---
 
-## 🤝 Build in Public
+## Build in Public
 
 I’ll be sharing progress, lessons, and challenges as I build Scholarra. Feedback and discussions are welcome, but the source code is not open for reuse.
 
 ---
 
-## 👤 Author
-
-**Edward Ijeruh**  
-Frontend Developer (React, Next.js)
-
----
-
-## ⚠️ License
+## License
 
 This project is proprietary. See the LICENSE file for details.
