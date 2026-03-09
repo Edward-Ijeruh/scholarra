@@ -160,142 +160,216 @@ export default function EditProfileForm() {
   );
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="min-h-screen mx-auto max-w-6xl p-6 md:p-8 rounded-xl bg-white"
-    >
-      {/* Back button */}
-      <button
-        type="button"
-        onClick={onBack}
-        className="mb-4 flex items-center gap-1 text-sm text-[#8f6cd0] hover:underline cursor-pointer"
-      >
-        <ArrowLeft size={16} />
-        Back to profile
-      </button>
+    <form onSubmit={handleSubmit(onSubmit)} className="min-h-screen">
+      <div className="mx-auto max-w-6xl">
+        {/* Back */}
+        <button
+          type="button"
+          onClick={onBack}
+          className="mb-6 flex items-center gap-1 text-sm text-[#8f6cd0] hover:underline cursor-pointer"
+        >
+          <ArrowLeft size={16} />
+          Back to profile
+        </button>
 
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">
-          Edit your profile
-        </h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Keep your information up to date so we can personalise your
-          experience.
-        </p>
-      </div>
+        {/* Header */}
+        <div className="mb-10">
+          <h1 className="text-2xl font-semibold text-gray-900">Edit Profile</h1>
+          <p className="text-sm text-gray-500 max-w-xl">
+            Manage your personal information and preferences.
+          </p>
+        </div>
 
-      {/* Name */}
-      <section className="space-y-2 mb-6">
-        <label className="text-sm font-medium text-gray-800">Name</label>
-        <input
-          {...register("name")}
-          placeholder="Your name"
-          className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm focus:border-[#8f6cd0] focus:outline-none"
-        />
-      </section>
+        {/* 2 Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* LEFT COLUMN (Main Settings) */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Personal Info Card */}
+            <div className="bg-white rounded-2xl border border-[#ebe7f5] p-6 shadow-sm space-y-6">
+              <div>
+                <h2 className="text-base font-semibold text-gray-900">
+                  Personal Information
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Update your basic details.
+                </p>
+              </div>
 
-      {/* Email (read-only) */}
-      <section className="space-y-2 mb-6">
-        <label className="text-sm font-medium text-gray-800">Email</label>
-        <input
-          value={user.email ?? ""}
-          disabled
-          className="w-full cursor-not-allowed rounded-md border border-gray-200 bg-gray-100 px-4 py-3 text-sm text-gray-500"
-        />
-      </section>
-
-      {/* Field of study */}
-      <section className="space-y-3 mb-6">
-        <h2 className="text-sm font-medium text-gray-800">Field of study</h2>
-        <Controller
-          control={control}
-          name="fieldOfStudy"
-          render={({ field }) => (
-            <PillGroup
-              options={fields}
-              value={field.value}
-              onChange={field.onChange}
-            />
-          )}
-        />
-      </section>
-
-      {/* Location */}
-      <section className="space-y-3 mb-6">
-        <h2 className="text-sm font-medium text-gray-800">
-          Preferred locations
-        </h2>
-        <Controller
-          control={control}
-          name="location"
-          render={({ field }) => (
-            <PillGroup
-              options={locations}
-              value={field.value}
-              onChange={field.onChange}
-            />
-          )}
-        />
-      </section>
-
-      {/* Notifications */}
-      <section className="space-y-4 mb-8">
-        <h2 className="text-sm font-medium text-gray-800">
-          Notification preferences
-        </h2>
-
-        <Controller
-          name="notificationPrefs"
-          control={control}
-          render={({ field }) => (
-            <div className="space-y-3">
-              <label className="flex cursor-pointer items-center gap-3 text-sm text-gray-700">
+              {/* Name */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-800">
+                  Name
+                </label>
                 <input
-                  type="checkbox"
-                  checked={field.value.email}
-                  onChange={(e) =>
-                    field.onChange({
-                      ...field.value,
-                      email: e.target.checked,
-                    })
-                  }
-                  className="cursor-pointer accent-[#8f6cd0]"
+                  {...register("name")}
+                  placeholder="Your name"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm
+                           focus:border-[#8f6cd0] focus:ring-2 focus:ring-[#8f6cd0]/20
+                           outline-none transition"
                 />
-                Email notifications
-              </label>
+              </div>
 
-              <label className="flex cursor-pointer items-center gap-3 text-sm text-gray-700">
+              {/* Email */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-800">
+                  Email
+                </label>
                 <input
-                  type="checkbox"
-                  checked={field.value.push}
-                  onChange={(e) =>
-                    field.onChange({
-                      ...field.value,
-                      push: e.target.checked,
-                    })
-                  }
-                  className="cursor-pointer accent-[#8f6cd0]"
+                  value={user.email ?? ""}
+                  disabled
+                  className="w-full cursor-not-allowed rounded-lg border border-gray-200
+                           bg-gray-100 px-4 py-3 text-sm text-gray-500"
                 />
-                Push notifications
-              </label>
+              </div>
             </div>
-          )}
-        />
-      </section>
 
-      {/* Save */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="flex w-full cursor-pointer items-center justify-center rounded-md bg-[#8f6cd0] py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
-      >
-        {loading ? (
-          <Loader2 className="animate-spin" size={18} />
-        ) : (
-          "Save changes"
-        )}
-      </button>
+            {/* Preferences Card */}
+            <div className="bg-white rounded-2xl border border-[#ebe7f5] p-6 shadow-sm space-y-8">
+              {/* Field of Study */}
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-base font-semibold text-gray-900">
+                    Field of Study
+                  </h2>
+                  <p className="text-sm text-gray-500">
+                    Select areas you're interested in.
+                  </p>
+                </div>
+
+                <Controller
+                  control={control}
+                  name="fieldOfStudy"
+                  render={({ field }) => (
+                    <PillGroup
+                      options={fields}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              </div>
+
+              {/* Location */}
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-base font-semibold text-gray-900">
+                    Preferred Locations
+                  </h2>
+                  <p className="text-sm text-gray-500">
+                    Choose where you’d like to study.
+                  </p>
+                </div>
+
+                <Controller
+                  control={control}
+                  name="location"
+                  render={({ field }) => (
+                    <PillGroup
+                      options={locations}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN (Sticky Sidebar) */}
+          <div className="space-y-6">
+            {/* Notification Settings */}
+            <div className="sticky top-24 bg-white rounded-2xl border border-[#ebe7f5] p-6 shadow-sm space-y-6">
+              <div>
+                <h2 className="text-base font-semibold text-gray-900">
+                  Notifications
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Control how you receive updates.
+                </p>
+              </div>
+
+              <Controller
+                name="notificationPrefs"
+                control={control}
+                render={({ field }) => (
+                  <div className="space-y-4">
+                    {/* Email Toggle */}
+                    <label className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3">
+                      <span className="text-sm text-gray-700">
+                        Email notifications
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          field.onChange({
+                            ...field.value,
+                            email: !field.value.email,
+                          })
+                        }
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition cursor-pointer ${
+                          field.value.email ? "bg-[#8f6cd0]" : "bg-gray-300"
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                            field.value.email
+                              ? "translate-x-6"
+                              : "translate-x-1"
+                          }`}
+                        />
+                      </button>
+                    </label>
+
+                    {/* Push Toggle */}
+                    <label className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3">
+                      <span className="text-sm text-gray-700">
+                        Push notifications
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          field.onChange({
+                            ...field.value,
+                            push: !field.value.push,
+                          })
+                        }
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition cursor-pointer ${
+                          field.value.push ? "bg-[#8f6cd0]" : "bg-gray-300"
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                            field.value.push ? "translate-x-6" : "translate-x-1"
+                          }`}
+                        />
+                      </button>
+                    </label>
+                  </div>
+                )}
+              />
+
+              {/* Save Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-xl bg-[#8f6cd0] py-3 text-sm
+                         font-semibold text-white shadow-md transition-all
+                         hover:opacity-90 transition cursor-pointer
+                         disabled:opacity-60 disabled:cursor-not-allowed
+                         flex items-center justify-center"
+              >
+                {loading ? (
+                  <Loader2 className="animate-spin" size={18} />
+                ) : (
+                  "Save changes"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </form>
   );
 }
