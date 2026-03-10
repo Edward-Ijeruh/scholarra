@@ -73,16 +73,33 @@ export default function Topbar({
       </div>
 
       {/* Center */}
-      <div className="hidden md:flex max-w-md w-full mx-8 relative">
-        <Search
-          size={16}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-        />
-        <input
-          placeholder="Search scholarships, deadlines…"
-          className="w-full h-9 pl-9 pr-3 border border-[#dcdcdc] rounded-md text-sm outline-none focus:border-[#8f6cd0]"
-        />
-      </div>
+      <Link
+        href="/scholarships"
+        className="relative hidden md:flex items-center text-sm text-gray-600 hover:text-gray-900 transition"
+      >
+        {/* Decorative curved dashed line */}
+        <svg
+          className="absolute -top-3 inset-0 w-full h-10 opacity-30 pointer-events-none"
+          viewBox="0 0 400 40"
+          preserveAspectRatio="none"
+          fill="none"
+        >
+          <path
+            d="M0 25 C60 5,120 5,180 25 S300 45,400 20"
+            stroke="#8f6cd0"
+            strokeWidth="1.5"
+            strokeDasharray="5 5"
+            strokeLinecap="round"
+          />
+        </svg>
+
+        <span className="relative px-2">
+          Find scholarships tailored for you.{" "}
+          <span className="text-[#8f6cd0] font-medium hover:underline">
+            Browse scholarships
+          </span>
+        </span>
+      </Link>
 
       {/* Right */}
       <div className="flex items-center gap-4">

@@ -115,9 +115,29 @@ export default function ScholarshipsPage() {
 
       {/* Content */}
       {loading && (
-        <p className="flex items-center justify-center pt-4 text-gray-500">
-          Loading…
-        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-white border border-[#e6e2f0] rounded-xl p-5 space-y-4 animate-pulse"
+            >
+              {/* Title */}
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+
+              {/* Tags */}
+              <div className="space-y-2">
+                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+              </div>
+
+              {/* Footer */}
+              <div className="flex items-center justify-between pt-2">
+                <div className="h-6 w-24 bg-gray-200 rounded-md"></div>
+                <div className="h-4 w-20 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
 
       {!loading && visibleScholarships.length === 0 && (
@@ -126,7 +146,7 @@ export default function ScholarshipsPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
         {visibleScholarships.map((scholarship) => (
           <ScholarshipCard key={scholarship.id} scholarship={scholarship} />
         ))}

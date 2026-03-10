@@ -38,11 +38,50 @@ export default function ProfilePage() {
     fetchProfile();
   }, [user]);
 
+  // Skeleton loader
   if (loadingUser || loading) {
     return (
-      <p className="flex items-center justify-center pt-10 text-gray-500">
-        Loading profile...
-      </p>
+      <div className="mx-auto max-w-6xl animate-pulse space-y-8">
+        {/* Header*/}
+        <div className="rounded-xl bg-white p-6 border border-[#e6e2f0] flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="h-16 w-16 rounded-full bg-gray-200"></div>
+
+            <div className="space-y-2">
+              <div className="h-4 w-40 bg-gray-200 rounded"></div>
+              <div className="h-3 w-56 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+
+          <div className="h-9 w-32 bg-gray-200 rounded-md"></div>
+        </div>
+
+        {/* Cards grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="rounded-xl bg-white border border-[#e6e2f0] p-6 space-y-4"
+            >
+              {/* Title */}
+              <div className="h-4 w-40 bg-gray-200 rounded"></div>
+
+              {/* Rows */}
+              <div className="space-y-4">
+                {Array.from({ length: 3 }).map((_, j) => (
+                  <div key={j} className="flex items-start gap-3">
+                    <div className="h-4 w-4 rounded bg-gray-200 mt-1"></div>
+                    <div className="space-y-2 flex-1">
+                      <div className="h-3 w-24 bg-gray-200 rounded"></div>
+                      <div className="h-3 w-40 bg-gray-200 rounded"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     );
   }
 

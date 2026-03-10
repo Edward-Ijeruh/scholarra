@@ -100,12 +100,87 @@ export default function EditProfileForm() {
     fetchData();
   }, [user, reset]);
 
-  if (loadingUser || !user || !initialData)
+  if (loadingUser || !user || !initialData) {
     return (
-      <p className="flex items-center justify-center pt-10 text-gray-500">
-        Loading...
-      </p>
+      <div className="mx-auto max-w-6xl animate-pulse">
+        {/* Back button */}
+        <div className="mb-6 h-4 w-32 bg-gray-200 rounded"></div>
+
+        {/* Header */}
+        <div className="mb-10 space-y-2">
+          <div className="h-6 w-40 bg-gray-200 rounded"></div>
+          <div className="h-4 w-80 bg-gray-200 rounded"></div>
+        </div>
+
+        {/* Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left side */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Personal info card */}
+            <div className="bg-white rounded-2xl border border-[#ebe7f5] p-6 space-y-6">
+              <div className="space-y-2">
+                <div className="h-4 w-40 bg-gray-200 rounded"></div>
+                <div className="h-3 w-60 bg-gray-200 rounded"></div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="h-3 w-20 bg-gray-200 rounded"></div>
+                <div className="h-10 w-full bg-gray-200 rounded-lg"></div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="h-3 w-20 bg-gray-200 rounded"></div>
+                <div className="h-10 w-full bg-gray-200 rounded-lg"></div>
+              </div>
+            </div>
+
+            {/* Preferences card */}
+            <div className="bg-white rounded-2xl border border-[#ebe7f5] p-6 space-y-8">
+              {[1, 2].map((section) => (
+                <div key={section} className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="h-4 w-40 bg-gray-200 rounded"></div>
+                    <div className="h-3 w-60 bg-gray-200 rounded"></div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="h-8 w-24 rounded-full bg-gray-200"
+                      ></div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right side */}
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl border border-[#ebe7f5] p-6 space-y-6">
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded"></div>
+                <div className="h-3 w-52 bg-gray-200 rounded"></div>
+              </div>
+
+              {[1, 2].map((_, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between border border-gray-200 px-4 py-3 rounded-lg"
+                >
+                  <div className="h-3 w-32 bg-gray-200 rounded"></div>
+                  <div className="h-6 w-11 rounded-full bg-gray-200"></div>
+                </div>
+              ))}
+
+              <div className="h-10 w-full bg-gray-200 rounded-xl"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
+  }
 
   const onSubmit = async (data: ProfileFormValues) => {
     try {
@@ -182,7 +257,7 @@ export default function EditProfileForm() {
 
         {/* 2 Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* LEFT COLUMN (Main Settings) */}
+          {/* Left side */}
           <div className="lg:col-span-2 space-y-6">
             {/* Personal Info Card */}
             <div className="bg-white rounded-2xl border border-[#ebe7f5] p-6 shadow-sm space-y-6">
@@ -275,7 +350,7 @@ export default function EditProfileForm() {
             </div>
           </div>
 
-          {/* RIGHT COLUMN (Sticky Sidebar) */}
+          {/* Right side */}
           <div className="space-y-6">
             {/* Notification Settings */}
             <div className="sticky top-24 bg-white rounded-2xl border border-[#ebe7f5] p-6 shadow-sm space-y-6">

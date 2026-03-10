@@ -3,7 +3,14 @@ import Link from "next/link";
 import { Scholarship } from "@/types/scholarship";
 import { getDeadlineInfo } from "@/lib/scholarships/deadline";
 import { Timestamp } from "firebase/firestore";
-import { Loader2 } from "lucide-react";
+import {
+  Loader2,
+  MapPin,
+  Tag,
+  Clock,
+  ArrowRight,
+  BookmarkX,
+} from "lucide-react";
 import clsx from "clsx";
 
 export default function ScholarshipCard({
@@ -31,26 +38,33 @@ export default function ScholarshipCard({
   };
 
   return (
-    <div className="group bg-white border border-[#e6e2f0] rounded-xl p-5 transition hover:shadow-sm">
+    <div className="group bg-white border border-[#e6e2f0] rounded-xl p-5 transition-all hover:shadow-md hover:-translate-y-[2px]">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <h3 className="font-medium text-gray-900 leading-snug">
+      <div className="flex items-start justify-between gap-3">
+        <h3 className="font-semibold text-gray-900 leading-snug text-sm md:text-base group-hover:text-[#8f6cd0] transition">
           {scholarship.title}
         </h3>
 
         {scholarship.popularityScore && (
-          <span className="shrink-0 text-xs font-medium bg-[#f4f0fb] text-[#8f6cd0] px-2 py-1 rounded-full">
-            Popular
+          <span className="flex items-center gap-1 shrink-0 text-xs font-medium bg-[#f4f0fb] text-[#8f6cd0] px-2 py-1 rounded-full">
+            🔥 Popular
           </span>
         )}
       </div>
 
-      {/* Meta */}
-      <div className="mt-1 space-y-1">
-        <p className="text-sm text-gray-500">
-          {scholarship.tags.slice(0, 3).join(" · ")} ·{" "}
-          {scholarship.location.join(", ")}
-        </p>
+      {/* Meta Info */}
+      <div className="mt-3 space-y-2 text-sm text-gray-500">
+        <div className="flex items-center gap-2">
+          <Tag size={14} />
+          <span className="truncate">
+            {scholarship.tags.slice(0, 3).join(" · ")}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <MapPin size={14} />
+          <span>{scholarship.location.join(", ")}</span>
+        </div>
 
         {scholarship.appliedAt && (
           <p className="text-xs text-gray-400">
@@ -61,35 +75,43 @@ export default function ScholarshipCard({
 
       {/* Footer */}
       <div className="flex items-center justify-between mt-4">
+        {/* Deadline Badge */}
         <span
           className={clsx(
-            "text-xs font-medium",
-            deadline.urgency === "urgent" && "text-red-500",
-            deadline.urgency === "normal" && "text-gray-500",
+            "flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-md",
+            deadline.urgency === "urgent" && "bg-red-50 text-red-600",
+            deadline.urgency === "normal" && "bg-gray-100 text-gray-600",
           )}
         >
+          <Clock size={13} />
           {deadline.label}
         </span>
 
-        <div className="flex items-center gap-3">
+        {/* Actions */}
+        <div className="flex items-center gap-2">
           {onUnsave && (
             <button
               onClick={handleUnsave}
               disabled={unsaving}
-              className="flex items-center justify-center min-w-[60px] text-xs font-medium text-red-500 hover:bg-red-50 px-2 py-1 rounded-md transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              className="flex items-center gap-1 text-xs font-medium text-red-500 hover:bg-red-50 px-2 py-1 rounded-md transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {unsaving ? (
                 <Loader2 className="h-3 w-3 animate-spin" />
               ) : (
-                "Unsave"
+                <>
+                  <BookmarkX size={14} />
+                  Unsave
+                </>
               )}
             </button>
           )}
+
           <Link
             href={`/scholarships/${scholarship.id}`}
-            className="text-sm font-medium text-[#8f6cd0] hover:underline"
+            className="flex items-center gap-1 text-sm font-medium text-[#8f6cd0] hover:underline transition"
           >
-            View details
+            View
+            <ArrowRight size={15} />
           </Link>
         </div>
       </div>

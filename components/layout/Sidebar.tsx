@@ -32,10 +32,7 @@ export default function Sidebar({
     { label: "Saved", icon: Bookmark, href: "/saved" },
   ];
 
-  const settings = [
-    { label: "Profile", icon: User, href: "/profile" },
-    { label: "Settings", icon: Settings, href: "/settings" },
-  ];
+  const settings = [{ label: "Profile", icon: User, href: "/profile" }];
 
   return (
     <>
