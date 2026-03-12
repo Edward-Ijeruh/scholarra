@@ -16,37 +16,41 @@ import {
   UserPlus,
   CheckCircle,
   ArrowRight,
+  PhoneCall,
+  Mail,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { FaWhatsapp, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
+// import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
+import { AccordionItem } from "@/components/ui/Accordion";
 
 // Fade animations
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
-  },
-};
+// const fadeUp: Variants = {
+//   hidden: { opacity: 0, y: 40 },
+//   visible: {
+//     opacity: 1,
+//     y: 0,
+//     transition: { duration: 0.6, ease: "easeOut" },
+//   },
+// };
 
-const fadeLeft: Variants = {
-  hidden: { opacity: 0, x: 60 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.7, ease: "easeOut" },
-  },
-};
+// const fadeLeft: Variants = {
+//   hidden: { opacity: 0, x: 60 },
+//   visible: {
+//     opacity: 1,
+//     x: 0,
+//     transition: { duration: 0.7, ease: "easeOut" },
+//   },
+// };
 
-const fadeDown: Variants = {
-  hidden: { opacity: 0, y: -30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5 },
-  },
-};
+// const fadeDown: Variants = {
+//   hidden: { opacity: 0, y: -30 },
+//   visible: {
+//     opacity: 1,
+//     y: 0,
+//     transition: { duration: 0.5 },
+//   },
+// };
 
 export default function Home() {
   const [open, setOpen] = useState(false);
@@ -85,6 +89,9 @@ export default function Home() {
             </a>
             <a href="#how-it-works" className="hover:text-[#8f6cd0]">
               How it works
+            </a>
+            <a href="#faq" className="hover:text-[#8f6cd0]">
+              FAQ
             </a>
           </nav>
 
@@ -129,6 +136,14 @@ export default function Home() {
               className="hover:text-[#8f6cd0]"
             >
               How it works
+            </a>
+
+            <a
+              href="#faq"
+              onClick={() => setOpen(false)}
+              className="hover:text-[#8f6cd0]"
+            >
+              FAQ
             </a>
 
             <Link
@@ -427,6 +442,100 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section
+        id="faq"
+        className="scroll-mt-14 border-t border-[#e6e2f0] py-20"
+      >
+        <div className="mx-auto max-w-7xl px-4">
+          {/* Header */}
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl md:text-4xl font-semibold text-gray-900">
+              Frequently Asked Questions
+            </h2>
+            <p className="mt-4 text-gray-600 text-sm md:text-base">
+              Everything you need to know about using Scholarra to discover,
+              track, and apply for scholarships.
+            </p>
+          </div>
+
+          {/* Accordion */}
+          <div className="mt-14 max-w-3xl mx-auto space-y-4">
+            {[
+              {
+                question: "What is Scholarra?",
+                answer:
+                  "Scholarra is a platform designed to help Nigerian students discover genuine scholarship opportunities, track deadlines, and apply with confidence, all in one organised and student-friendly interface.",
+              },
+              {
+                question: "How do I create a Scholarra account?",
+                answer:
+                  "Simply click the 'Get started' button, provide your name, email, and create a password. After that, you can complete your profile by sharing your field of study, preferred locations, and academic goals.",
+              },
+              {
+                question: "Are all scholarships verified?",
+                answer:
+                  "Yes! Scholarra only lists carefully vetted scholarships to ensure there are no scams or outdated opportunities.",
+              },
+              {
+                question: "How does Scholarra match me with scholarships?",
+                answer:
+                  "We use your profile details, like field of study, location, and interests to automatically recommend scholarships that fit you, so you don’t waste time on irrelevant opportunities.",
+              },
+              // {
+              //   question: "Can I track application deadlines?",
+              //   answer:
+              //     "Absolutely. Scholarra provides deadline tracking and sends reminders, so you never miss an important application date.",
+              // },
+              {
+                question: "Is Scholarra free to use?",
+                answer:
+                  "Yes! You can discover scholarships, track deadlines, and receive notifications completely free.",
+              },
+              // {
+              //   question: "Can I get notifications for new scholarships?",
+              //   answer:
+              //     "Yes, Scholarra will alert you when new opportunities match your profile, keeping you ahead of the competition.",
+              // },
+              {
+                question: "What if I have other questions or need support?",
+                answer: (
+                  <p className="text-gray-700 text-sm">
+                    You can reach out to us directly via WhatsApp:{" "}
+                    <a
+                      href="https://wa.me/2349056599271"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-900 underline hover:text-gray-800"
+                    >
+                      +234 9056599271
+                    </a>
+                    , call:{" "}
+                    <a
+                      href="tel:08063471067"
+                      className="text-gray-900 underline hover:text-gray-800"
+                    >
+                      +234 8063471067
+                    </a>
+                    , or email:{" "}
+                    <a
+                      href="mailto:ijeruh20@gmail.com"
+                      className="text-gray-900 underline hover:text-gray-800"
+                    >
+                      ijeruh20@gmail.com
+                    </a>
+                    . We're happy to help with any questions about using
+                    Scholarra.
+                  </p>
+                ),
+              },
+            ].map(({ question, answer }, idx) => (
+              <AccordionItem key={idx} question={question} answer={answer} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t border-[#e6e2f0] bg-white">
         <div className="mx-auto max-w-7xl px-4 pt-16 pb-10">
@@ -479,23 +588,39 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* Legal / support */}
+            {/* Contact Section */}
             <div>
-              <h4 className="text-sm font-medium text-gray-900">Company</h4>
+              <h4 className="text-sm font-medium text-gray-900">Contact</h4>
               <ul className="mt-4 space-y-3 text-sm text-gray-600">
-                <li>
-                  <a href="#" className="hover:text-[#8f6cd0]">
-                    Privacy policy
+                {/* WhatsApp */}
+                <li className="flex items-center gap-2 hover:text-[#25D366]">
+                  <a
+                    href="https://wa.me/2349056599271"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <FaWhatsapp className="text-[#25D366] w-5 h-5" />
+                    +234 9056599271
                   </a>
                 </li>
-                <li>
-                  <a href="#" className="hover:text-[#8f6cd0]">
-                    Terms of service
+
+                {/* Phone */}
+                <li className="flex items-center gap-2 hover:text-[#1E40AF]">
+                  <a href="tel:08063471067" className="flex items-center gap-2">
+                    <PhoneCall className="text-[#1E40AF] w-4 h-4" />
+                    +234 8063471067
                   </a>
                 </li>
-                <li>
-                  <a href="#" className="hover:text-[#8f6cd0]">
-                    Contact support
+
+                {/* Email */}
+                <li className="flex items-center gap-2 hover:text-[#D14836]">
+                  <a
+                    href="mailto:ijeruh20@gmail.com"
+                    className="flex items-center gap-2"
+                  >
+                    <Mail className="text-[#D14836] w-4 h-4" />
+                    ijeruh20@gmail.com
                   </a>
                 </li>
               </ul>
