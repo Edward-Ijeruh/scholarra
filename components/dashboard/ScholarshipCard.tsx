@@ -108,6 +108,7 @@ export default function ScholarshipCard({
 
           <Link
             href={`/scholarships/${scholarship.id}`}
+            scroll={false}
             className="flex items-center gap-1 text-sm font-medium text-[#8f6cd0] hover:underline transition"
           >
             View

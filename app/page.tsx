@@ -17,6 +17,36 @@ import {
   CheckCircle,
   ArrowRight,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
+
+// Fade animations
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+const fadeLeft: Variants = {
+  hidden: { opacity: 0, x: 60 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
+};
+
+const fadeDown: Variants = {
+  hidden: { opacity: 0, y: -30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5 },
+  },
+};
 
 export default function Home() {
   const [open, setOpen] = useState(false);
@@ -114,37 +144,64 @@ export default function Home() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        {/* Background accent */}
+        {/* Background */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#f6f2ff] via-white to-white" />
 
         <div className="mx-auto max-w-7xl px-4 pt-10 md:pt-16 pb-24 grid gap-16 md:grid-cols-2 items-center">
-          {/* Left content */}
-          <div>
+          <div className="text-center md:text-left">
             {/* Trust badge */}
-            <div className="inline-flex items-center gap-2 rounded-full bg-[#e4dbff] px-4 py-1.5 text-xs font-medium text-[#5f45a8]">
+            <motion.div
+              variants={fadeDown}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ amount: 0.6 }}
+              className="inline-flex items-center gap-2 rounded-full bg-[#e4dbff] px-4 py-1.5 text-xs font-medium text-[#5f45a8] mx-auto md:mx-0"
+            >
               <GraduationCap size={14} className="text-[#6f55b8]" />
               Built for Nigerian students
-            </div>
+            </motion.div>
 
-            <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight">
+            {/* Heading */}
+            <motion.h1
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ amount: 0.6 }}
+              className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight mx-auto md:mx-0"
+            >
               Find scholarships that actually fit{" "}
-              <span className="relative text-[#8f6cd0]">
-                you
-                <span className="absolute left-0 -bottom-1 h-2 w-full bg-[#e6dbff] -z-10 rounded" />
+              <span className="relative text-[#8f6cd0] inline-block">
+                <span className="relative z-10">you</span>
+                <span className="absolute right-0 bottom-0 h-2 w-[80%] bg-[#e6dbff] rounded" />
               </span>
-            </h1>
+            </motion.h1>
 
-            <p className="mt-6 text-base sm:text-lg text-gray-600 max-w-xl">
+            {/* Paragraph */}
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ amount: 0.6 }}
+              transition={{ delay: 0.2 }}
+              className="mt-6 text-base sm:text-lg text-gray-600 max-w-xl mx-auto md:mx-0"
+            >
               Scholarra helps Nigerian students discover, track, and apply for
               scholarships{" "}
               <span className="font-medium text-gray-700">
                 without the confusion
               </span>
               , spam, or missed deadlines.
-            </p>
+            </motion.p>
 
             {/* CTAs */}
-            <div className="mt-10 flex flex-col sm:flex-row gap-4">
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ amount: 0.6 }}
+              transition={{ delay: 0.35 }}
+              className="mt-10 flex flex-col sm:flex-row gap-4"
+            >
               <Link
                 href="/auth"
                 className="inline-flex items-center justify-center rounded-md bg-[#8f6cd0] px-7 py-3.5 text-sm font-medium text-white shadow-sm hover:opacity-90"
@@ -158,15 +215,16 @@ export default function Home() {
               >
                 Sign in
               </Link>
-            </div>
+            </motion.div>
           </div>
 
-          {/* Right visual */}
-          <div className="relative">
-            {/* Decorative blobs */}
-            <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-[#efeaff] blur-3xl" />
-            <div className="absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-[#e6dbff] blur-3xl" />
-
+          <div
+            // variants={fadeLeft}
+            // initial="hidden"
+            // whileInView="visible"
+            // viewport={{ amount: 0.4 }}
+            className="relative"
+          >
             <div className="relative h-[300px] sm:h-[360px] md:h-[420px] w-full rounded-2xl bg-white shadow-lg ring-1 ring-[#ece7f5] overflow-hidden">
               <Image
                 src="/hero-students.jpg"

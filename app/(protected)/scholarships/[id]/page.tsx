@@ -149,9 +149,8 @@ export default function ScholarshipDetailsPage() {
         }),
       });
 
-      setHasApplied(true);
-
       window.open(scholarship.sourceURL, "_blank");
+      setHasApplied(true);
 
       toast.success("Application tracked");
     } catch (error) {

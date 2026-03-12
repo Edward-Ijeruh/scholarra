@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
+import ScrollToTop from "@/components/ScrollToTop";
 
 export const metadata: Metadata = {
   title: "Scholarra",
@@ -16,7 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased font-poppins">
-        <Providers>{children}</Providers>
+        <Providers>
+          <ScrollToTop />
+          {children}
+        </Providers>
       </body>
     </html>
   );
