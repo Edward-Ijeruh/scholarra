@@ -130,16 +130,17 @@ export default function ScholarshipDetailsPage() {
   };
 
   const handleApply = async () => {
+    const user = auth.currentUser;
+
+    if (!user || !scholarship) {
+      toast.error("You must be logged in");
+      return;
+    }
+
+    setApplying(true);
+    window.open(scholarship.sourceURL, "_blank");
+
     try {
-      const user = auth.currentUser;
-
-      if (!user || !scholarship) {
-        toast.error("You must be logged in");
-        return;
-      }
-
-      setApplying(true);
-
       const userRef = doc(db, "users", user.uid);
 
       await updateDoc(userRef, {
@@ -149,9 +150,7 @@ export default function ScholarshipDetailsPage() {
         }),
       });
 
-      window.open(scholarship.sourceURL, "_blank");
       setHasApplied(true);
-
       toast.success("Application tracked");
     } catch (error) {
       console.error(error);
