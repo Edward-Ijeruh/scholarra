@@ -150,23 +150,23 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 pt-10 md:pt-16 pb-24 grid gap-16 md:grid-cols-2 items-center">
           <div className="text-center md:text-left">
             {/* Trust badge */}
-            <motion.div
-              variants={fadeDown}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ amount: 0.6 }}
+            <div
+              // variants={fadeDown}
+              // initial="hidden"
+              // whileInView="visible"
+              // viewport={{ amount: 0.6 }}
               className="inline-flex items-center gap-2 rounded-full bg-[#e4dbff] px-4 py-1.5 text-xs font-medium text-[#5f45a8] mx-auto md:mx-0"
             >
               <GraduationCap size={14} className="text-[#6f55b8]" />
               Built for Nigerian students
-            </motion.div>
+            </div>
 
             {/* Heading */}
-            <motion.h1
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ amount: 0.6 }}
+            <h1
+              // variants={fadeUp}
+              // initial="hidden"
+              // whileInView="visible"
+              // viewport={{ amount: 0.6 }}
               className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight mx-auto md:mx-0"
             >
               Find scholarships that actually fit{" "}
@@ -174,15 +174,15 @@ export default function Home() {
                 <span className="relative z-10">you</span>
                 <span className="absolute right-0 bottom-0 h-2 w-[80%] bg-[#e6dbff] rounded" />
               </span>
-            </motion.h1>
+            </h1>
 
             {/* Paragraph */}
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ amount: 0.6 }}
-              transition={{ delay: 0.2 }}
+            <p
+              // variants={fadeUp}
+              // initial="hidden"
+              // whileInView="visible"
+              // viewport={{ amount: 0.6 }}
+              // transition={{ delay: 0.2 }}
               className="mt-6 text-base sm:text-lg text-gray-600 max-w-xl mx-auto md:mx-0"
             >
               Scholarra helps Nigerian students discover, track, and apply for
@@ -191,15 +191,15 @@ export default function Home() {
                 without the confusion
               </span>
               , spam, or missed deadlines.
-            </motion.p>
+            </p>
 
             {/* CTAs */}
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ amount: 0.6 }}
-              transition={{ delay: 0.35 }}
+            <div
+              // variants={fadeUp}
+              // initial="hidden"
+              // whileInView="visible"
+              // viewport={{ amount: 0.6 }}
+              // transition={{ delay: 0.35 }}
               className="mt-10 flex flex-col sm:flex-row gap-4"
             >
               <Link
@@ -215,7 +215,7 @@ export default function Home() {
               >
                 Sign in
               </Link>
-            </motion.div>
+            </div>
           </div>
 
           <div
