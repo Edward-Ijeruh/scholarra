@@ -15,7 +15,6 @@ export async function createUserProfile(user: User): Promise<void> {
       location: [],
       notificationPrefs: {
         email: true,
-        push: false,
       },
       role: "user",
       createdAt: Timestamp.now(),
