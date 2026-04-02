@@ -16,9 +16,11 @@ import clsx from "clsx";
 export default function ScholarshipCard({
   scholarship,
   onUnsave,
+  applicationId,
 }: {
   scholarship: Scholarship & { appliedAt?: Timestamp };
   onUnsave?: () => Promise<void>;
+  applicationId?: string;
 }) {
   const deadlineDate =
     scholarship.deadline instanceof Timestamp
@@ -44,15 +46,16 @@ export default function ScholarshipCard({
         <h3 className="font-semibold text-gray-900 leading-snug text-sm md:text-base group-hover:text-[#8f6cd0] transition">
           {scholarship.title}
         </h3>
-
-        {scholarship.popularityScore && (
-          <span className="flex items-center gap-1 shrink-0 text-xs font-medium bg-[#f4f0fb] text-[#8f6cd0] px-2 py-1 rounded-full">
-            🔥 Popular
-          </span>
-        )}
+        <div className="flex items-center gap-2 shrink-0">
+          {scholarship.popularityScore && (
+            <span className="text-xs font-medium bg-[#f4f0fb] text-[#8f6cd0] px-2 py-1 rounded-full">
+              🔥 Popular
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* Meta Info */}
+      {/* Meta info */}
       <div className="mt-3 space-y-2 text-sm text-gray-500">
         <div className="flex items-center gap-2">
           <Tag size={14} />
@@ -67,7 +70,7 @@ export default function ScholarshipCard({
         </div>
 
         {scholarship.appliedAt && (
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-green-600 font-medium">
             {formatAppliedDate(scholarship.appliedAt)}
           </p>
         )}
@@ -75,7 +78,7 @@ export default function ScholarshipCard({
 
       {/* Footer */}
       <div className="flex items-center justify-between mt-4">
-        {/* Deadline Badge */}
+        {/* Deadline badge */}
         <span
           className={clsx(
             "flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-md",

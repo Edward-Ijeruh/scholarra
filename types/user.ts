@@ -8,7 +8,6 @@ export interface UserProfile {
   location: string[];
   notificationPrefs: {
     email: boolean;
-    push: boolean;
   };
   role: "user" | "admin";
   createdAt: Timestamp;

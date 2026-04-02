@@ -103,11 +103,6 @@ export default function Topbar({
 
       {/* Right */}
       <div className="flex items-center gap-4">
-        <button className="relative w-9 h-9 flex items-center justify-center rounded-full bg-[#f0ebff] hover:bg-[#e6ddff] transition cursor-pointer">
-          <Bell size={18} className="text-[#8f6cd0]" />
-          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#8f6cd0]" />
-        </button>
-
         {/* Avatar  */}
         <Link
           href="/profile"

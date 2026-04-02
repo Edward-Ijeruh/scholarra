@@ -19,7 +19,6 @@ const profileSchema = z.object({
   location: z.array(z.string()).min(1),
   notificationPrefs: z.object({
     email: z.boolean(),
-    push: z.boolean(),
   }),
 });
 
@@ -57,7 +56,7 @@ export default function EditProfileForm() {
         name: "",
         fieldOfStudy: [],
         location: [],
-        notificationPrefs: { email: true, push: false },
+        notificationPrefs: { email: true },
       },
     },
   );
@@ -84,7 +83,6 @@ export default function EditProfileForm() {
           location: data.location ?? [],
           notificationPrefs: data.notificationPrefs ?? {
             email: true,
-            push: false,
           },
         });
       } else {
@@ -92,7 +90,7 @@ export default function EditProfileForm() {
           name: "",
           fieldOfStudy: [],
           location: [],
-          notificationPrefs: { email: true, push: false },
+          notificationPrefs: { email: true },
         });
       }
     };
@@ -116,7 +114,7 @@ export default function EditProfileForm() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left side */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Personal info card */}
+            {/* Personal info */}
             <div className="bg-white rounded-2xl border border-[#ebe7f5] p-6 space-y-6">
               <div className="space-y-2">
                 <div className="h-4 w-40 bg-gray-200 rounded"></div>
@@ -134,7 +132,7 @@ export default function EditProfileForm() {
               </div>
             </div>
 
-            {/* Preferences card */}
+            {/* Preferences */}
             <div className="bg-white rounded-2xl border border-[#ebe7f5] p-6 space-y-8">
               {[1, 2].map((section) => (
                 <div key={section} className="space-y-4">
@@ -164,7 +162,7 @@ export default function EditProfileForm() {
                 <div className="h-3 w-52 bg-gray-200 rounded"></div>
               </div>
 
-              {[1, 2].map((_, i) => (
+              {[1].map((_, i) => (
                 <div
                   key={i}
                   className="flex items-center justify-between border border-gray-200 px-4 py-3 rounded-lg"
@@ -237,7 +235,7 @@ export default function EditProfileForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="min-h-screen">
       <div className="mx-auto max-w-6xl">
-        {/* Back */}
+        {/* Back button */}
         <button
           type="button"
           onClick={onBack}
@@ -255,11 +253,10 @@ export default function EditProfileForm() {
           </p>
         </div>
 
-        {/* 2 Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left side */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Personal Info Card */}
+            {/* Personal info */}
             <div className="bg-white rounded-2xl border border-[#ebe7f5] p-6 shadow-sm space-y-6">
               <div>
                 <h2 className="text-base font-semibold text-gray-900">
@@ -298,9 +295,9 @@ export default function EditProfileForm() {
               </div>
             </div>
 
-            {/* Preferences Card */}
+            {/* Preferences */}
             <div className="bg-white rounded-2xl border border-[#ebe7f5] p-6 shadow-sm space-y-8">
-              {/* Field of Study */}
+              {/* Field of study */}
               <div className="space-y-4">
                 <div>
                   <h2 className="text-base font-semibold text-gray-900">
@@ -352,7 +349,7 @@ export default function EditProfileForm() {
 
           {/* Right side */}
           <div className="space-y-6">
-            {/* Notification Settings */}
+            {/* Notification */}
             <div className="sticky top-24 bg-white rounded-2xl border border-[#ebe7f5] p-6 shadow-sm space-y-6">
               <div>
                 <h2 className="text-base font-semibold text-gray-900">
@@ -368,7 +365,7 @@ export default function EditProfileForm() {
                 control={control}
                 render={({ field }) => (
                   <div className="space-y-4">
-                    {/* Email Toggle */}
+                    {/* Email toggle */}
                     <label className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3">
                       <span className="text-sm text-gray-700">
                         Email notifications
@@ -395,37 +392,11 @@ export default function EditProfileForm() {
                         />
                       </button>
                     </label>
-
-                    {/* Push Toggle */}
-                    <label className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3">
-                      <span className="text-sm text-gray-700">
-                        Push notifications
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          field.onChange({
-                            ...field.value,
-                            push: !field.value.push,
-                          })
-                        }
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition cursor-pointer ${
-                          field.value.push ? "bg-[#8f6cd0]" : "bg-gray-300"
-                        }`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                            field.value.push ? "translate-x-6" : "translate-x-1"
-                          }`}
-                        />
-                      </button>
-                    </label>
                   </div>
                 )}
               />
 
-              {/* Save Button */}
+              {/* Save button */}
               <button
                 type="submit"
                 disabled={loading}

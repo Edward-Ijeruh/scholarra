@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 
-/** Firestore shape (DB) */
+// Firestore shape for the db
 export interface FirestoreScholarship {
   id: string;
   title: string;
@@ -20,7 +20,7 @@ export interface FirestoreScholarship {
   popularityScore?: number;
 }
 
-/** UI / App shape (Frontend) */
+// Shape for frontend
 export interface Scholarship {
   id: string;
   title: string;

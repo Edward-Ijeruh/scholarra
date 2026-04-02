@@ -2,7 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { auth, db } from "@/lib/firebase/firebase";
-import { doc, getDoc, updateDoc, arrayRemove } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  arrayRemove,
+  collection,
+  query,
+  where,
+  getDocs,
+  onSnapshot,
+} from "firebase/firestore";
 import ScholarshipCard from "@/components/dashboard/ScholarshipCard";
 import CustomSelect from "@/components/ui/CustomSelect";
 import { getDeadlineInfo } from "@/lib/scholarships/deadline";
@@ -18,72 +28,64 @@ type AppliedScholarship = {
 
 export default function ApplicationsPage() {
   const [scholarships, setScholarships] = useState<
-    (Scholarship & { appliedAt?: Timestamp })[]
+    (Scholarship & { appliedAt?: Timestamp; applicationId: string })[]
   >([]);
   const [loading, setLoading] = useState(true);
-
   const [search, setSearch] = useState("");
   const [field, setField] = useState("all");
   const [urgency, setUrgency] = useState("all");
 
   useEffect(() => {
-    const fetchApplications = async () => {
-      const user = auth.currentUser;
-
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (!user) {
         setLoading(false);
         return;
       }
 
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
+      try {
+        const q = query(
+          collection(db, "applications"),
+          where("userId", "==", user.uid),
+        );
+        const snap = await getDocs(q);
 
-      if (!userSnap.exists()) {
-        setLoading(false);
-        return;
-      }
+        const results: (Scholarship & {
+          appliedAt?: Timestamp;
+          applicationId: string;
+        })[] = [];
 
-      const applied: AppliedScholarship[] =
-        userSnap.data().appliedScholarships || [];
+        for (const docSnap of snap.docs) {
+          const app = docSnap.data();
 
-      if (applied.length === 0) {
-        setLoading(false);
-        return;
-      }
+          const scholarshipRef = doc(db, "scholarships", app.scholarshipId);
+          const scholarshipSnap = await getDoc(scholarshipRef);
 
-      const results: (Scholarship & { appliedAt?: Timestamp })[] = [];
+          if (!scholarshipSnap.exists()) continue;
 
-      for (const item of applied) {
-        if (!item?.id) continue;
-
-        const ref = doc(db, "scholarships", item.id);
-        const snap = await getDoc(ref);
-
-        if (snap.exists()) {
-          const raw = {
-            id: snap.id,
-            ...snap.data(),
-          };
-
+          const raw = { id: scholarshipSnap.id, ...scholarshipSnap.data() };
           const transformed = transformScholarship(raw as any);
 
           results.push({
             ...transformed,
-            appliedAt: item.appliedAt,
+            appliedAt: app.appliedAt,
+            applicationId: docSnap.id,
           });
         }
+
+        setScholarships(results);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to load your applications");
+      } finally {
+        setLoading(false);
       }
+    });
 
-      setScholarships(results);
-      setLoading(false);
-    };
-
-    fetchApplications();
+    return () => unsubscribe();
   }, []);
 
   const handleRemoveApplication = async (scholarshipId: string) => {
     const user = auth.currentUser;
-
     if (!user) {
       toast.error("You must be logged in");
       return;
@@ -91,22 +93,17 @@ export default function ApplicationsPage() {
 
     try {
       const userRef = doc(db, "users", user.uid);
-
       const userSnap = await getDoc(userRef);
       const applied = userSnap.data()?.appliedScholarships || [];
 
       const toRemove = applied.find(
         (a: AppliedScholarship) => a.id === scholarshipId,
       );
-
       if (!toRemove) return;
 
-      await updateDoc(userRef, {
-        appliedScholarships: arrayRemove(toRemove),
-      });
+      await updateDoc(userRef, { appliedScholarships: arrayRemove(toRemove) });
 
       setScholarships((prev) => prev.filter((s) => s.id !== scholarshipId));
-
       toast.success("Application removed");
     } catch (error) {
       console.error(error);
@@ -138,9 +135,7 @@ export default function ApplicationsPage() {
           s.deadline instanceof Timestamp
             ? s.deadline.toDate()
             : new Date(s.deadline);
-
         const deadlineInfo = getDeadlineInfo(deadlineDate);
-
         return { ...s, deadlineInfo };
       })
       .filter((s) => s.title.toLowerCase().includes(search.toLowerCase()))
@@ -170,24 +165,22 @@ export default function ApplicationsPage() {
           onChange={(e) => setSearch(e.target.value)}
           className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-[#8f6cd0]"
         />
-
         <CustomSelect
           value={field}
           options={fieldOptions}
           onChange={setField}
         />
-
         <CustomSelect
           value={urgency}
           options={urgencyOptions}
           onChange={setUrgency}
         />
-
         <div className="flex items-center text-sm text-gray-500">
           {visibleScholarships.length} results
         </div>
       </div>
 
+      {/* Loading skeleton */}
       {loading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -195,16 +188,9 @@ export default function ApplicationsPage() {
               key={i}
               className="bg-white border border-[#e6e2f0] rounded-xl p-5 space-y-4 animate-pulse"
             >
-              {/* Title */}
               <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-
-              {/* Tags */}
-              <div className="space-y-2">
-                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/3"></div>
-              </div>
-
-              {/* Footer */}
+              <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-3 bg-gray-200 rounded w-1/3"></div>
               <div className="flex items-center justify-between pt-2">
                 <div className="h-6 w-24 bg-gray-200 rounded-md"></div>
                 <div className="h-4 w-20 bg-gray-200 rounded"></div>
@@ -222,7 +208,11 @@ export default function ApplicationsPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
         {visibleScholarships.map((scholarship) => (
-          <ScholarshipCard key={scholarship.id} scholarship={scholarship} />
+          <ScholarshipCard
+            key={scholarship.applicationId}
+            scholarship={scholarship}
+            applicationId={scholarship.applicationId}
+          />
         ))}
       </div>
     </div>

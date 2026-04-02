@@ -581,6 +581,11 @@ export default function Home() {
                   </a>
                 </li>
                 <li>
+                  <a href="#faq" className="hover:text-[#8f6cd0]">
+                    FAQ
+                  </a>
+                </li>
+                <li>
                   <Link href="/auth" className="hover:text-[#8f6cd0]">
                     Get started
                   </Link>

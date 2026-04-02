@@ -14,7 +14,6 @@ This project is being **built in public** as part of my journey to grow as a dev
 - Filters by eligibility, location, and field of study
 - Deadline tracking and alerts
 - User accounts and personalized preferences
-- Admin dashboard for managing opportunities
 
 ---
 

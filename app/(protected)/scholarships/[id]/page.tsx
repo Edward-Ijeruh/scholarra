@@ -4,10 +4,15 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import {
   doc,
+  addDoc,
   getDoc,
   updateDoc,
+  collection,
   arrayUnion,
   arrayRemove,
+  query,
+  where,
+  getDocs,
 } from "firebase/firestore";
 import { Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase/firebase";
@@ -19,6 +24,11 @@ import { transformScholarship } from "@/lib/scholarships/transformScholarship";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import clsx from "clsx";
+import {
+  ApplicationDocument,
+  ApplicationChecklistItem,
+  ApplicationTimelineItem,
+} from "@/types/application";
 
 export default function ScholarshipDetailsPage() {
   const { id } = useParams();
@@ -138,20 +148,77 @@ export default function ScholarshipDetailsPage() {
     }
 
     setApplying(true);
-    window.open(scholarship.sourceURL, "_blank");
 
     try {
+      const q = query(
+        collection(db, "applications"),
+        where("userId", "==", user.uid),
+        where("scholarshipId", "==", scholarship.id),
+      );
+
+      const existing = await getDocs(q);
+
+      if (!existing.empty) {
+        toast.info("You are already tracking this application");
+        setHasApplied(true);
+        return;
+      }
+
+      const now = Timestamp.now();
+
+      const checklist: ApplicationChecklistItem[] = [
+        { id: "cv", label: "Upload CV", completed: false },
+        { id: "essay", label: "Write motivation letter", completed: false },
+        { id: "transcript", label: "Upload transcripts", completed: false },
+      ];
+
+      const timeline: ApplicationTimelineItem[] = [
+        {
+          type: "created",
+          message: "Application created",
+          createdAt: now,
+        },
+      ];
+
+      const applicationData: ApplicationDocument = {
+        userId: user.uid,
+        scholarshipId: scholarship.id,
+        scholarshipTitle: scholarship.title,
+        scholarshipUrl: scholarship.sourceURL,
+        status: "applied",
+        appliedAt: now,
+        updatedAt: now,
+        notes: "",
+        checklist,
+        timeline,
+      };
+
+      const applicationsRef = collection(db, "applications");
+
+      const applicationRef = await addDoc(applicationsRef, applicationData);
+
+      await fetch("/api/notifications/application-submitted", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          applicationId: applicationRef.id,
+        }),
+      });
+
       const userRef = doc(db, "users", user.uid);
 
       await updateDoc(userRef, {
         appliedScholarships: arrayUnion({
           id: scholarship.id,
-          appliedAt: Timestamp.now(),
+          appliedAt: now,
         }),
       });
 
       setHasApplied(true);
-      toast.success("Application tracked");
+      toast.success("Application tracking started");
+      window.open(scholarship.sourceURL, "_blank");
     } catch (error) {
       console.error(error);
       toast.error("Failed to track application");

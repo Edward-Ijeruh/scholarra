@@ -152,12 +152,15 @@ export default function ProfilePage() {
           <InfoRow
             icon={Bell}
             label="Email notifications"
-            value={profile.notificationPrefs.email ? "Enabled" : "Disabled"}
-          />
-          <InfoRow
-            icon={Bell}
-            label="Push notifications"
-            value={profile.notificationPrefs.push ? "Enabled" : "Disabled"}
+            value={
+              <span className="flex items-center gap-2">
+                <span className="text-gray-400">Coming soon</span>
+                <span className="px-2 py-0.5 text-xs bg-yellow-100 text-yellow-800 rounded-full">
+                  Beta
+                </span>
+              </span>
+            }
+            className="opacity-50 cursor-not-allowed"
           />
         </Card>
 
@@ -199,10 +202,12 @@ function InfoRow({
   icon: Icon,
   label,
   value,
+  className,
 }: {
   icon: LucideIcon;
   label: string;
-  value: string;
+  value: React.ReactNode;
+  className?: string;
 }) {
   return (
     <div className="flex items-start gap-3">
