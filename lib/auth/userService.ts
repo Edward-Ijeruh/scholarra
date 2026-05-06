@@ -13,6 +13,7 @@ export async function createUserProfile(user: User): Promise<void> {
       email: user.email ?? "",
       fieldOfStudy: [],
       location: [],
+      appliedScholarships: [],
       notificationPrefs: {
         email: true,
       },

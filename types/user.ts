@@ -11,4 +11,5 @@ export interface UserProfile {
   };
   role: "user" | "admin";
   createdAt: Timestamp;
+  appliedScholarships: string[];
 }

@@ -24,11 +24,6 @@ import { transformScholarship } from "@/lib/scholarships/transformScholarship";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import clsx from "clsx";
-import {
-  ApplicationDocument,
-  ApplicationChecklistItem,
-  ApplicationTimelineItem,
-} from "@/types/application";
 
 export default function ScholarshipDetailsPage() {
   const { id } = useParams();
@@ -38,7 +33,8 @@ export default function ScholarshipDetailsPage() {
   const [saving, setSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [hasApplied, setHasApplied] = useState(false);
-  const [applying, setApplying] = useState(false);
+  const [showApplyConfirm, setShowApplyConfirm] = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
   useEffect(() => {
     const fetchScholarship = async () => {
@@ -85,6 +81,33 @@ export default function ScholarshipDetailsPage() {
     fetchScholarship();
   }, [id]);
 
+  // Apply box focus
+  useEffect(() => {
+    const handleFocus = () => {
+      if (showApplyConfirm) {
+        const el = document.getElementById("apply-confirm-box");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    };
+
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [showApplyConfirm]);
+
+  useEffect(() => {
+    if (showApplyConfirm) {
+      const el = document.getElementById("apply-confirm-box");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  }, [showApplyConfirm]);
+
   const deadlineDate = useMemo(() => {
     if (!scholarship) return null;
     return scholarship.deadline;
@@ -130,6 +153,17 @@ export default function ScholarshipDetailsPage() {
 
         setIsSaved(true);
         toast.success("Scholarship saved");
+
+        fetch("/api/notifications/saved", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.uid,
+            scholarshipId: scholarship.id,
+          }),
+        }).catch(console.error);
       }
     } catch (error) {
       console.error(error);
@@ -147,84 +181,52 @@ export default function ScholarshipDetailsPage() {
       return;
     }
 
-    setApplying(true);
+    window.open(scholarship.sourceURL, "_blank");
+    setShowApplyConfirm(true);
+  };
+
+  const confirmApplied = async () => {
+    const user = auth.currentUser;
+
+    if (!user || !scholarship) return;
+
+    setConfirming(true);
 
     try {
-      const q = query(
-        collection(db, "applications"),
-        where("userId", "==", user.uid),
-        where("scholarshipId", "==", scholarship.id),
-      );
-
-      const existing = await getDocs(q);
-
-      if (!existing.empty) {
-        toast.info("You are already tracking this application");
-        setHasApplied(true);
-        return;
-      }
-
-      const now = Timestamp.now();
-
-      const checklist: ApplicationChecklistItem[] = [
-        { id: "cv", label: "Upload CV", completed: false },
-        { id: "essay", label: "Write motivation letter", completed: false },
-        { id: "transcript", label: "Upload transcripts", completed: false },
-      ];
-
-      const timeline: ApplicationTimelineItem[] = [
-        {
-          type: "created",
-          message: "Application created",
-          createdAt: now,
-        },
-      ];
-
-      const applicationData: ApplicationDocument = {
-        userId: user.uid,
-        scholarshipId: scholarship.id,
-        scholarshipTitle: scholarship.title,
-        scholarshipUrl: scholarship.sourceURL,
-        status: "applied",
-        appliedAt: now,
-        updatedAt: now,
-        notes: "",
-        checklist,
-        timeline,
-      };
-
-      const applicationsRef = collection(db, "applications");
-
-      const applicationRef = await addDoc(applicationsRef, applicationData);
-
-      await fetch("/api/notifications/application-submitted", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          applicationId: applicationRef.id,
-        }),
-      });
-
       const userRef = doc(db, "users", user.uid);
 
       await updateDoc(userRef, {
         appliedScholarships: arrayUnion({
           id: scholarship.id,
-          appliedAt: now,
+          appliedAt: Timestamp.now(),
         }),
       });
 
       setHasApplied(true);
-      toast.success("Application tracking started");
-      window.open(scholarship.sourceURL, "_blank");
+      setShowApplyConfirm(false);
+
+      toast.success("Application recorded");
+
+      fetch("/api/notifications/applied", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.uid,
+          scholarshipId: scholarship.id,
+        }),
+      }).catch(console.error);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to track application");
+      toast.error("Failed to save application");
     } finally {
-      setApplying(false);
+      setConfirming(false);
     }
+  };
+
+  const cancelApplied = () => {
+    setShowApplyConfirm(false);
   };
 
   if (loading) {
@@ -428,6 +430,40 @@ export default function ScholarshipDetailsPage() {
       {/* Action sidebar */}
       <aside className="space-y-4">
         <div className="sticky top-24 bg-white border border-[#e6e2f0] rounded-xl p-6 space-y-4">
+          {/* Apply confirmation */}
+          {showApplyConfirm && (
+            <div
+              id="apply-confirm-box"
+              className="border border-[#e6e2f0] bg-[#f6f2ff] rounded-lg p-4 space-y-3"
+            >
+              <p className="text-sm text-[#7c5bc6] font-medium">
+                Did you apply for this scholarship?
+              </p>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={confirmApplied}
+                  disabled={confirming}
+                  className="px-3 py-1 text-sm bg-[#7c5bc6] text-white rounded cursor-pointer hover:opacity-80 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {confirming ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    "Yes"
+                  )}
+                </button>
+
+                <button
+                  onClick={cancelApplied}
+                  disabled={confirming}
+                  className="px-3 py-1 text-sm bg-gray-300 text-gray-700 rounded cursor-pointer hover:opacity-80"
+                >
+                  No
+                </button>
+              </div>
+            </div>
+          )}
+
           {hasApplied && (
             <div className="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3">
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-200 text-green-600 text-xs font-bold">
@@ -447,18 +483,14 @@ export default function ScholarshipDetailsPage() {
           {!hasApplied && (
             <button
               onClick={handleApply}
-              disabled={isClosed || applying}
+              disabled={isClosed}
               className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium cursor-pointer ${
                 isClosed
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                   : "bg-[#7c5bc6] text-white hover:bg-[#8f6cd0]"
               }`}
             >
-              {applying ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                "Apply on official site"
-              )}
+              Apply on official site
             </button>
           )}
 

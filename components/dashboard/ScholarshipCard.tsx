@@ -16,11 +16,9 @@ import clsx from "clsx";
 export default function ScholarshipCard({
   scholarship,
   onUnsave,
-  applicationId,
 }: {
   scholarship: Scholarship & { appliedAt?: Timestamp };
   onUnsave?: () => Promise<void>;
-  applicationId?: string;
 }) {
   const deadlineDate =
     scholarship.deadline instanceof Timestamp
@@ -70,7 +68,7 @@ export default function ScholarshipCard({
         </div>
 
         {scholarship.appliedAt && (
-          <p className="text-xs text-green-600 font-medium">
+          <p className="text-xs text-gray-500">
             {formatAppliedDate(scholarship.appliedAt)}
           </p>
         )}

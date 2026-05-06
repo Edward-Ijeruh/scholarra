@@ -2,17 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { auth, db } from "@/lib/firebase/firebase";
-import {
-  doc,
-  getDoc,
-  updateDoc,
-  arrayRemove,
-  collection,
-  query,
-  where,
-  getDocs,
-  onSnapshot,
-} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import ScholarshipCard from "@/components/dashboard/ScholarshipCard";
 import CustomSelect from "@/components/ui/CustomSelect";
 import { getDeadlineInfo } from "@/lib/scholarships/deadline";
@@ -21,14 +11,14 @@ import { Scholarship } from "@/types/scholarship";
 import { Timestamp } from "firebase/firestore";
 import { toast } from "react-toastify";
 
-type AppliedScholarship = {
+type AppliedItem = {
   id: string;
   appliedAt?: Timestamp;
 };
 
 export default function ApplicationsPage() {
   const [scholarships, setScholarships] = useState<
-    (Scholarship & { appliedAt?: Timestamp; applicationId: string })[]
+    (Scholarship & { appliedAt?: Timestamp })[]
   >([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -36,80 +26,67 @@ export default function ApplicationsPage() {
   const [urgency, setUrgency] = useState("all");
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    const fetchApplied = async () => {
+      const user = auth.currentUser;
+
       if (!user) {
         setLoading(false);
         return;
       }
 
       try {
-        const q = query(
-          collection(db, "applications"),
-          where("userId", "==", user.uid),
-        );
-        const snap = await getDocs(q);
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+          setLoading(false);
+          return;
+        }
+
+        const applied: AppliedItem[] =
+          userSnap.data().appliedScholarships || [];
+
+        if (applied.length === 0) {
+          setLoading(false);
+          return;
+        }
 
         const results: (Scholarship & {
           appliedAt?: Timestamp;
-          applicationId: string;
         })[] = [];
 
-        for (const docSnap of snap.docs) {
-          const app = docSnap.data();
+        for (const item of applied) {
+          if (!item?.id) continue;
 
-          const scholarshipRef = doc(db, "scholarships", app.scholarshipId);
-          const scholarshipSnap = await getDoc(scholarshipRef);
+          const schRef = doc(db, "scholarships", item.id);
+          const schSnap = await getDoc(schRef);
 
-          if (!scholarshipSnap.exists()) continue;
+          if (!schSnap.exists()) continue;
 
-          const raw = { id: scholarshipSnap.id, ...scholarshipSnap.data() };
+          const raw = {
+            id: schSnap.id,
+            ...schSnap.data(),
+          };
+
           const transformed = transformScholarship(raw as any);
 
           results.push({
             ...transformed,
-            appliedAt: app.appliedAt,
-            applicationId: docSnap.id,
+            appliedAt: item.appliedAt,
           });
         }
 
         setScholarships(results);
       } catch (error) {
         console.error(error);
-        toast.error("Failed to load your applications");
+        toast.error("Failed to load applications");
       } finally {
         setLoading(false);
       }
-    });
+    };
 
-    return () => unsubscribe();
+    fetchApplied();
   }, []);
-
-  const handleRemoveApplication = async (scholarshipId: string) => {
-    const user = auth.currentUser;
-    if (!user) {
-      toast.error("You must be logged in");
-      return;
-    }
-
-    try {
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
-      const applied = userSnap.data()?.appliedScholarships || [];
-
-      const toRemove = applied.find(
-        (a: AppliedScholarship) => a.id === scholarshipId,
-      );
-      if (!toRemove) return;
-
-      await updateDoc(userRef, { appliedScholarships: arrayRemove(toRemove) });
-
-      setScholarships((prev) => prev.filter((s) => s.id !== scholarshipId));
-      toast.success("Application removed");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to remove application");
-    }
-  };
 
   const fieldOptions = useMemo(() => {
     const fields = new Set<string>();
@@ -208,11 +185,7 @@ export default function ApplicationsPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
         {visibleScholarships.map((scholarship) => (
-          <ScholarshipCard
-            key={scholarship.applicationId}
-            scholarship={scholarship}
-            applicationId={scholarship.applicationId}
-          />
+          <ScholarshipCard key={scholarship.id} scholarship={scholarship} />
         ))}
       </div>
     </div>
