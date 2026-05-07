@@ -1,20 +1,14 @@
 import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import path from "path";
-import fs from "fs";
-
-// Load service account key
-const serviceAccountPath = path.resolve(
-  process.cwd(),
-  "serviceAccountKey.json"
-);
-
-const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
 
 const app =
   getApps().length === 0
     ? initializeApp({
-        credential: cert(serviceAccount),
+        credential: cert({
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+        }),
       })
     : getApps()[0];
 
