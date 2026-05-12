@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Public assets
+  // Allow Next internals and API routes
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon.ico") ||
@@ -13,7 +13,12 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Allowed routes
+  // Allow all static files in the public folder
+  if (pathname.match(/\.(.*)$/)) {
+    return NextResponse.next();
+  }
+
+  // Allowed pages
   const allowedRoutes = ["/playbook", "/check-email"];
 
   if (!allowedRoutes.includes(pathname)) {
