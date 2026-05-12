@@ -31,7 +31,7 @@ export default function CheckEmailPage() {
         {/* Back button */}
         <button
           onClick={() => router.push("/playbook")}
-          className="mt-6 flex items-center justify-center gap-2 text-sm text-[#8f6cd0] hover:underline mx-auto"
+          className="mt-6 flex items-center justify-center gap-2 text-sm text-[#8f6cd0] hover:underline mx-auto cursor-pointer"
         >
           Back to playbook
         </button>
